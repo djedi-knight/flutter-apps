@@ -8,7 +8,25 @@ class ProductPage extends StatelessWidget {
         title: Text('Product Detail'),
       ),
       body: Center(
-        child: Text('On the Product Page'),
+        child: Column(
+          // mainAxisAlignment: MainAxisAlignment.center,
+          // crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Image.asset('assets/food.jpg'),
+            Container(
+              padding: EdgeInsets.all(10.0),
+              child: Text('On the Product Page'),
+            ),
+            Container(
+              padding: EdgeInsets.all(10.0),
+              child: RaisedButton(
+                color: Theme.of(context).accentColor,
+                child: Text('Back'),
+                onPressed: () => Navigator.pop(context),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
