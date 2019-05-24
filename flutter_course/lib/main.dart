@@ -45,7 +45,11 @@ class _MyAppState extends State<MyApp> {
           brightness: Brightness.light),
       // home: AuthPage(),
       routes: {
-        '/': (BuildContext context) => ProductsPage(_products, _addProduct, _deleteProduct,),
+        '/': (BuildContext context) => ProductsPage(
+              _products,
+              _addProduct,
+              _deleteProduct,
+            ),
         '/admin': (BuildContext context) => ProductsAdminPage(),
       },
       onGenerateRoute: (RouteSettings settings) {
@@ -63,6 +67,15 @@ class _MyAppState extends State<MyApp> {
           );
         }
         return null;
+      },
+      onUnknownRoute: (RouteSettings settings) {
+        return MaterialPageRoute(
+          builder: (BuildContext context) => ProductsPage(
+                _products,
+                _addProduct,
+                _deleteProduct,
+              ),
+        );
       },
     );
   }
