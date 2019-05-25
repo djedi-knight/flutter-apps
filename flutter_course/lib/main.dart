@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-// import './pages/auth.dart';
+import './pages/auth.dart';
 import './pages/product.dart';
 import './pages/products_admin.dart';
 import './pages/products.dart';
@@ -38,10 +38,11 @@ class _MyAppState extends State<MyApp> {
           primarySwatch: Colors.deepOrange,
           accentColor: Colors.deepPurple,
           brightness: Brightness.light),
-      // home: AuthPage(),
       routes: {
-        '/': (BuildContext context) => ProductsPage(_products),
-        '/admin': (BuildContext context) => ProductsAdminPage(_addProduct, _deleteProduct),
+        '/': (BuildContext context) => AuthPage(),
+        '/products': (BuildContext context) => ProductsPage(_products),
+        '/admin': (BuildContext context) =>
+            ProductsAdminPage(_addProduct, _deleteProduct),
       },
       onGenerateRoute: (RouteSettings settings) {
         final List<String> pathElements = settings.name.split('/');
