@@ -13,23 +13,31 @@ class ProductListPage extends StatelessWidget {
     return Center(
       child: ListView.builder(
         itemBuilder: (BuildContext context, int index) {
-          return ListTile(
-            leading: Image.asset(products[index]['image']),
-            title: Text(products[index]['title']),
-            trailing: IconButton(
-              icon: Icon(Icons.edit),
-              onPressed: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                  builder: (BuildContext context) {
-                    return ProductEditPage(
-                      updateProduct: updateProduct,
-                      product: products[index],
-                      productIndex: index,
-                    );
+          return Column(
+            children: <Widget>[
+              ListTile(
+                leading: CircleAvatar(
+                  backgroundImage: AssetImage(products[index]['image']),
+                ),
+                title: Text(products[index]['title']),
+                subtitle: Text('\$' + products[index]['price'].toString()),
+                trailing: IconButton(
+                  icon: Icon(Icons.edit),
+                  onPressed: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (BuildContext context) {
+                        return ProductEditPage(
+                          updateProduct: updateProduct,
+                          product: products[index],
+                          productIndex: index,
+                        );
+                      },
+                    ));
                   },
-                ));
-              },
-            ),
+                ),
+              ),
+              Divider(),
+            ],
           );
         },
         itemCount: products.length,
