@@ -9,6 +9,23 @@ class ProductListPage extends StatelessWidget {
 
   ProductListPage(this.products, this.updateProduct, this.deleteProduct);
 
+  Widget _buildEditButton(BuildContext context, int index) {
+    return IconButton(
+      icon: Icon(Icons.edit),
+      onPressed: () {
+        Navigator.of(context).push(MaterialPageRoute(
+          builder: (BuildContext context) {
+            return ProductEditPage(
+              updateProduct: updateProduct,
+              product: products[index],
+              productIndex: index,
+            );
+          },
+        ));
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -16,7 +33,9 @@ class ProductListPage extends StatelessWidget {
         itemBuilder: (BuildContext context, int index) {
           return Dismissible(
             key: Key(products[index]['title']),
-            background: Container(color: Colors.red,),
+            background: Container(
+              color: Colors.red,
+            ),
             onDismissed: (DismissDirection direction) {
               deleteProduct(index);
             },
@@ -28,20 +47,7 @@ class ProductListPage extends StatelessWidget {
                   ),
                   title: Text(products[index]['title']),
                   subtitle: Text('\$' + products[index]['price'].toString()),
-                  trailing: IconButton(
-                    icon: Icon(Icons.edit),
-                    onPressed: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                        builder: (BuildContext context) {
-                          return ProductEditPage(
-                            updateProduct: updateProduct,
-                            product: products[index],
-                            productIndex: index,
-                          );
-                        },
-                      ));
-                    },
-                  ),
+                  trailing: _buildEditButton(context, index),
                 ),
                 Divider(),
               ],
