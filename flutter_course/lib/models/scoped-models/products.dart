@@ -70,6 +70,7 @@ class ProductsModel extends Model {
 
   void toggleDisplayMode() {
     _showFavourites = !_showFavourites;
+    _selectedProductIndex = null;
     notifyListeners();
   }
 }
