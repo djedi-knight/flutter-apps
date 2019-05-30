@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 
-import '../models/scoped-models/products.dart';
+import '../models/scoped-models/main.dart';
 import '../widgets/products/products.dart';
 
 class ProductsPage extends StatelessWidget {
@@ -32,11 +32,11 @@ class ProductsPage extends StatelessWidget {
       appBar: AppBar(
         title: Text('EasyList'),
         actions: <Widget>[
-          ScopedModelDescendant<ProductsModel>(
+          ScopedModelDescendant<MainModel>(
             builder: (
               BuildContext context,
               Widget child,
-              ProductsModel model,
+              MainModel model,
             ) {
               return IconButton(
                 icon: Icon(model.displayFavouritesOnly

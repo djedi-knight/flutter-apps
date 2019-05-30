@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 
-import '../../models/scoped-models/products.dart';
+import '../../models/scoped-models/main.dart';
 import '../../models/product.dart';
 import '../ui_elements/title_default.dart';
 import './address_tag.dart';
@@ -30,11 +30,11 @@ class ProductCard extends StatelessWidget {
   }
 
   Widget _buildActionButtons(BuildContext context) {
-    return ScopedModelDescendant<ProductsModel>(
+    return ScopedModelDescendant<MainModel>(
       builder: (
         BuildContext context,
         Widget child,
-        ProductsModel model,
+        MainModel model,
       ) {
         return ButtonBar(
           alignment: MainAxisAlignment.center,
