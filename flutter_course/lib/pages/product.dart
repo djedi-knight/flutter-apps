@@ -47,7 +47,7 @@ class ProductPage extends StatelessWidget {
         Navigator.pop(context, false);
         return Future.value(false);
       },
-      child: ScopedModelDescendant(
+      child: ScopedModelDescendant<ProductsModel>(
         builder: (
           BuildContext context,
           Widget child,
