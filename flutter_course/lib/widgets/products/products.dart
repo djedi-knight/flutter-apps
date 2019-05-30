@@ -29,7 +29,7 @@ class Products extends StatelessWidget {
         Widget child,
         ProductsModel model,
       ) {
-        return _buildProductList(model.products);
+        return _buildProductList(model.displayedProducts);
       },
     );
   }
