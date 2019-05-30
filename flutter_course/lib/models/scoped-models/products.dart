@@ -1,5 +1,6 @@
-import '../product.dart';
 import 'package:scoped_model/scoped_model.dart';
+
+import '../product.dart';
 
 class ProductsModel extends Model {
   List<Product> _products = [];
