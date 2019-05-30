@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:scoped_model/scoped_model.dart';
 
+import '../../models/scoped-models/products.dart';
 import '../../models/product.dart';
 import '../ui_elements/title_default.dart';
 import './address_tag.dart';
@@ -28,21 +30,32 @@ class ProductCard extends StatelessWidget {
   }
 
   Widget _buildActionButtons(BuildContext context) {
-    return ButtonBar(
-      alignment: MainAxisAlignment.center,
-      children: <Widget>[
-        IconButton(
-          icon: Icon(Icons.info),
-          color: Theme.of(context).accentColor,
-          onPressed: () => Navigator.pushNamed<bool>(
-              context, '/product/' + productIndex.toString()),
-        ),
-        IconButton(
-          icon: Icon(Icons.favorite_border),
-          color: Colors.red,
-          onPressed: () => {},
-        ),
-      ],
+    return ScopedModelDescendant<ProductsModel>(
+      builder: (
+        BuildContext context,
+        Widget child,
+        ProductsModel model,
+      ) {
+        return ButtonBar(
+          alignment: MainAxisAlignment.center,
+          children: <Widget>[
+            IconButton(
+              icon: Icon(Icons.info),
+              color: Theme.of(context).accentColor,
+              onPressed: () => Navigator.pushNamed<bool>(
+                  context, '/product/' + productIndex.toString()),
+            ),
+            IconButton(
+              icon: Icon(model.products[productIndex].isFavourite ? Icons.favorite : Icons.favorite_border),
+              color: Colors.red,
+              onPressed: () {
+                model.selectProduct(productIndex);
+                model.toggleProductFavouriteStatus();
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 
