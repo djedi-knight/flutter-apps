@@ -97,6 +97,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
           onPressed: () => _submitForm(
                 model.addProduct,
                 model.updateProduct,
+                model.selectProduct,
                 model.selectedProductIndex,
               ),
         );
@@ -137,7 +138,8 @@ class _ProductEditPageState extends State<ProductEditPage> {
 
   void _submitForm(
     Function addProduct,
-    Function updateProduct, [
+    Function updateProduct,
+    Function setSelectedProduct, [
     int selectedProductIndex,
   ]) {
     if (!_formKey.currentState.validate()) {
@@ -159,7 +161,8 @@ class _ProductEditPageState extends State<ProductEditPage> {
         _formData['price'],
       );
     }
-    Navigator.pushReplacementNamed(context, '/products');
+    Navigator.pushReplacementNamed(context, '/products')
+        .then((_) => setSelectedProduct(null));
   }
 
   @override

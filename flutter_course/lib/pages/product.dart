@@ -53,7 +53,7 @@ class ProductPage extends StatelessWidget {
           Widget child,
           MainModel model,
         ) {
-          final Product product = model.products[productIndex];
+          final Product product = model.allProducts[productIndex];
           return Scaffold(
             appBar: AppBar(
               title: Text(product.title),
