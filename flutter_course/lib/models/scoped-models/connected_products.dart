@@ -1,4 +1,6 @@
+import 'dart:convert';
 import 'package:scoped_model/scoped_model.dart';
+import 'package:http/http.dart' as http;
 
 import '../product.dart';
 import '../user.dart';
@@ -7,24 +9,6 @@ mixin ConnectedProductsModel on Model {
   List<Product> _products = [];
   int _selectedProductIndex;
   User _authenticatedUser;
-
-  void addProduct(
-    String title,
-    String description,
-    String image,
-    double price,
-  ) {
-    Product newProduct = Product(
-      title: title,
-      description: description,
-      image: image,
-      price: price,
-      userId: _authenticatedUser.id,
-      userEmail: _authenticatedUser.email,
-    );
-    _products.add(newProduct);
-    notifyListeners();
-  }
 }
 
 mixin ProductsModel on ConnectedProductsModel {
@@ -54,6 +38,35 @@ mixin ProductsModel on ConnectedProductsModel {
 
   bool get displayFavouritesOnly {
     return _showFavourites;
+  }
+
+  void addProduct(
+    String title,
+    String description,
+    String image,
+    double price,
+  ) {
+    final Map<String, dynamic> productData = {
+      'title': title,
+      'description': description,
+      'image':
+          'https://cdn1.medicalnewstoday.com/content/images/articles/321/321618/dark-chocolate-and-cocoa-beans-on-a-table.jpg',
+      'price': price,
+    };
+    http.post(
+      'https://fluttercourse-c2b8e.firebaseio.com/products.json',
+      body: json.encode(productData),
+    );
+    Product newProduct = Product(
+      title: title,
+      description: description,
+      image: image,
+      price: price,
+      userId: _authenticatedUser.id,
+      userEmail: _authenticatedUser.email,
+    );
+    _products.add(newProduct);
+    notifyListeners();
   }
 
   void updateProduct(

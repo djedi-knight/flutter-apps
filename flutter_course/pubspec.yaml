@@ -25,6 +25,7 @@ dependencies:
   cupertino_icons: ^0.1.2
 
   # Third-Party Packages
+  http: ^0.12.0+2
   scoped_model: ^1.0.1
 
 dev_dependencies:
