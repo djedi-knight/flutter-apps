@@ -53,20 +53,25 @@ mixin ProductsModel on ConnectedProductsModel {
           'https://cdn1.medicalnewstoday.com/content/images/articles/321/321618/dark-chocolate-and-cocoa-beans-on-a-table.jpg',
       'price': price,
     };
-    http.post(
+    http
+        .post(
       'https://fluttercourse-c2b8e.firebaseio.com/products.json',
       body: json.encode(productData),
-    );
-    Product newProduct = Product(
-      title: title,
-      description: description,
-      image: image,
-      price: price,
-      userId: _authenticatedUser.id,
-      userEmail: _authenticatedUser.email,
-    );
-    _products.add(newProduct);
-    notifyListeners();
+    )
+        .then((http.Response response) {
+      final Map<String, dynamic> responseData = json.decode(response.body);
+      Product newProduct = Product(
+        id: responseData['name'],
+        title: title,
+        description: description,
+        image: image,
+        price: price,
+        userId: _authenticatedUser.id,
+        userEmail: _authenticatedUser.email,
+      );
+      _products.add(newProduct);
+      notifyListeners();
+    });
   }
 
   void updateProduct(
