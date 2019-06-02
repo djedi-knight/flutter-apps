@@ -101,8 +101,24 @@ mixin ProductsModel on ConnectedProductsModel {
     http
         .get('https://fluttercourse-c2b8e.firebaseio.com/products.json')
         .then((http.Response response) {
-      final Map<String, dynamic> responseData = json.decode(response.body);
-      print(responseData);
+      final List<Product> fetchedProductList = [];
+      final Map<String, dynamic> productListData =
+          json.decode(response.body);
+      productListData
+          .forEach((String productId, dynamic productData) {
+        final Product product = Product(
+          id: productId,
+          title: productData['title'],
+          description: productData['description'],
+          price: double.parse(productData['price']),
+          image: productData['image'],
+          userId: productData['userId'],
+          userEmail: productData['userEmail'],
+        );
+        fetchedProductList.add(product);
+      });
+      _products = fetchedProductList;
+      notifyListeners();
     });
   }
 
