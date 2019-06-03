@@ -41,13 +41,14 @@ mixin ProductsModel on ConnectedProductsModel {
     return _showFavourites;
   }
 
-  void addProduct(
+  Future<Null> addProduct(
     String title,
     String description,
     String image,
     double price,
   ) {
     _isLoading = true;
+    notifyListeners();
     final Map<String, dynamic> productData = {
       'title': title,
       'description': description,
@@ -55,7 +56,7 @@ mixin ProductsModel on ConnectedProductsModel {
           'https://cdn1.medicalnewstoday.com/content/images/articles/321/321618/dark-chocolate-and-cocoa-beans-on-a-table.jpg',
       'price': price,
     };
-    http
+    return http
         .post(
       'https://fluttercourse-c2b8e.firebaseio.com/products.json',
       body: json.encode(productData),
@@ -107,6 +108,11 @@ mixin ProductsModel on ConnectedProductsModel {
         .then((http.Response response) {
       final List<Product> fetchedProductList = [];
       final Map<String, dynamic> productListData = json.decode(response.body);
+      if (productListData == null) {
+        _isLoading = false;
+        notifyListeners();
+        return;
+      }
       productListData.forEach((String productId, dynamic productData) {
         final Product product = Product(
           id: productId,
