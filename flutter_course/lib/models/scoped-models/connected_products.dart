@@ -124,16 +124,16 @@ mixin ProductsModel on ConnectedProductsModel {
     notifyListeners();
     http
         .delete(
-            'https://fluttercourse-c2b8e.firebaseio.com/products/${deletedProductId}.json')
+            'https://fluttercourse-c2b8e.firebaseio.com/products/$deletedProductId.json')
         .then((http.Response response) {
       _isLoading = false;
       notifyListeners();
     });
   }
 
-  void fetchProducts() {
+  Future<Null> fetchProducts() {
     _isLoading = true;
-    http
+    return http
         .get('https://fluttercourse-c2b8e.firebaseio.com/products.json')
         .then((http.Response response) {
       final List<Product> fetchedProductList = [];
