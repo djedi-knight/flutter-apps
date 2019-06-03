@@ -9,6 +9,7 @@ mixin ConnectedProductsModel on Model {
   List<Product> _products = [];
   int _selectedProductIndex;
   User _authenticatedUser;
+  bool _isLoading = false;
 }
 
 mixin ProductsModel on ConnectedProductsModel {
@@ -46,6 +47,7 @@ mixin ProductsModel on ConnectedProductsModel {
     String image,
     double price,
   ) {
+    _isLoading = true;
     final Map<String, dynamic> productData = {
       'title': title,
       'description': description,
@@ -70,6 +72,7 @@ mixin ProductsModel on ConnectedProductsModel {
         userEmail: _authenticatedUser.email,
       );
       _products.add(newProduct);
+      _isLoading = false;
       notifyListeners();
     });
   }
@@ -98,19 +101,18 @@ mixin ProductsModel on ConnectedProductsModel {
   }
 
   void fetchProducts() {
+    _isLoading = true;
     http
         .get('https://fluttercourse-c2b8e.firebaseio.com/products.json')
         .then((http.Response response) {
       final List<Product> fetchedProductList = [];
-      final Map<String, dynamic> productListData =
-          json.decode(response.body);
-      productListData
-          .forEach((String productId, dynamic productData) {
+      final Map<String, dynamic> productListData = json.decode(response.body);
+      productListData.forEach((String productId, dynamic productData) {
         final Product product = Product(
           id: productId,
           title: productData['title'],
           description: productData['description'],
-          price: double.parse(productData['price']),
+          price: productData['price'],
           image: productData['image'],
           userId: productData['userId'],
           userEmail: productData['userEmail'],
@@ -118,6 +120,7 @@ mixin ProductsModel on ConnectedProductsModel {
         fetchedProductList.add(product);
       });
       _products = fetchedProductList;
+      _isLoading = false;
       notifyListeners();
     });
   }
@@ -156,5 +159,11 @@ mixin UserModel on ConnectedProductsModel {
       email: email,
       password: password,
     );
+  }
+}
+
+mixin UtilityModel on ConnectedProductsModel {
+  bool get isLoading {
+    return _isLoading;
   }
 }
