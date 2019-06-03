@@ -78,22 +78,42 @@ mixin ProductsModel on ConnectedProductsModel {
     });
   }
 
-  void updateProduct(
+  Future<Null> updateProduct(
     String title,
     String description,
     String image,
     double price,
   ) {
-    Product updatedProduct = Product(
-      title: title,
-      description: description,
-      image: image,
-      price: price,
-      userId: selectedProduct.userId,
-      userEmail: selectedProduct.userEmail,
-    );
-    _products[selectedProductIndex] = updatedProduct;
+    _isLoading = true;
     notifyListeners();
+    final Map<String, dynamic> updateData = {
+      'title': title,
+      'description': description,
+      'image':
+          'https://cdn1.medicalnewstoday.com/content/images/articles/321/321618/dark-chocolate-and-cocoa-beans-on-a-table.jpg',
+      'price': price,
+      'userId': selectedProduct.userId,
+      'userEmail': selectedProduct.userEmail,
+    };
+    return http
+        .put(
+      'https://fluttercourse-c2b8e.firebaseio.com/products/${selectedProduct.id}.json',
+      body: json.encode(updateData),
+    )
+        .then((http.Response response) {
+      Product updatedProduct = Product(
+        id: selectedProduct.id,
+        title: title,
+        description: description,
+        image: image,
+        price: price,
+        userId: selectedProduct.userId,
+        userEmail: selectedProduct.userEmail,
+      );
+      _products[selectedProductIndex] = updatedProduct;
+      _isLoading = false;
+      notifyListeners();
+    });
   }
 
   void deleteProduct() {
