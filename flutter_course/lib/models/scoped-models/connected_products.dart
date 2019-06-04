@@ -90,7 +90,7 @@ mixin ProductsModel on ConnectedProductsModel {
     String description,
     String image,
     double price,
-  ) {
+  ) async {
     _isLoading = true;
     notifyListeners();
     final Map<String, dynamic> productData = {
@@ -100,12 +100,11 @@ mixin ProductsModel on ConnectedProductsModel {
           'https://cdn1.medicalnewstoday.com/content/images/articles/321/321618/dark-chocolate-and-cocoa-beans-on-a-table.jpg',
       'price': price,
     };
-    return http
-        .post(
-      'https://fluttercourse-c2b8e.firebaseio.com/products.json',
-      body: json.encode(productData),
-    )
-        .then<bool>((http.Response response) {
+    try {
+      final http.Response response = await http.post(
+        'https://fluttercourse-c2b8e.firebaseio.com/products.json',
+        body: json.encode(productData),
+      );
       if (response.statusCode != 200 && response.statusCode != 201) {
         _isLoading = false;
         notifyListeners();
@@ -125,11 +124,11 @@ mixin ProductsModel on ConnectedProductsModel {
       _isLoading = false;
       notifyListeners();
       return true;
-    }).catchError((error) {
+    } catch (error) {
       _isLoading = false;
       notifyListeners();
       return false;
-    });
+    }
   }
 
   Future<bool> updateProduct(
