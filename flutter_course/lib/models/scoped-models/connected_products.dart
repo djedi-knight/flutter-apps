@@ -80,7 +80,7 @@ mixin ProductsModel on ConnectedProductsModel {
     });
   }
 
-  Future<Null> addProduct(
+  Future<bool> addProduct(
     String title,
     String description,
     String image,
@@ -101,6 +101,11 @@ mixin ProductsModel on ConnectedProductsModel {
       body: json.encode(productData),
     )
         .then((http.Response response) {
+      if (response.statusCode != 200 && response.statusCode != 201) {
+        _isLoading = false;
+        notifyListeners();
+        return false;
+      }
       final Map<String, dynamic> responseData = json.decode(response.body);
       Product newProduct = Product(
         id: responseData['name'],
@@ -114,6 +119,7 @@ mixin ProductsModel on ConnectedProductsModel {
       _products.add(newProduct);
       _isLoading = false;
       notifyListeners();
+      return true;
     });
   }
 
