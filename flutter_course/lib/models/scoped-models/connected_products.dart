@@ -7,7 +7,7 @@ import '../user.dart';
 
 mixin ConnectedProductsModel on Model {
   List<Product> _products = [];
-  int _selectedProductIndex;
+  String _selectedProductId;
   User _authenticatedUser;
   bool _isLoading = false;
 }
@@ -26,15 +26,23 @@ mixin ProductsModel on ConnectedProductsModel {
     return List.from(_products);
   }
 
+  String get selectedProductId {
+    return _selectedProductId;
+  }
+
   int get selectedProductIndex {
-    return _selectedProductIndex;
+    return _products.indexWhere((Product product) {
+      return product.id == selectedProductId;
+    });
   }
 
   Product get selectedProduct {
-    if (selectedProductIndex == null) {
+    if (selectedProductId == null) {
       return null;
     }
-    return _products[selectedProductIndex];
+    return _products.firstWhere((Product product) {
+      return product.id == selectedProductId;
+    });
   }
 
   bool get displayFavouritesOnly {
@@ -118,9 +126,9 @@ mixin ProductsModel on ConnectedProductsModel {
 
   void deleteProduct() {
     _isLoading = true;
-    final deletedProductId = selectedProduct.id;
+    final deletedProductId = selectedProductIndex;
     _products.removeAt(selectedProductIndex);
-    _selectedProductIndex = null;
+    _selectedProductId = null;
     notifyListeners();
     http
         .delete(
@@ -165,6 +173,7 @@ mixin ProductsModel on ConnectedProductsModel {
     final bool isCurrentlyFavourite = selectedProduct.isFavourite;
     final bool newFavouriteStatus = !isCurrentlyFavourite;
     final Product updatedProduct = Product(
+      id: selectedProduct.id,
       title: selectedProduct.title,
       description: selectedProduct.description,
       image: selectedProduct.image,
@@ -173,17 +182,17 @@ mixin ProductsModel on ConnectedProductsModel {
       userId: selectedProduct.userId,
       userEmail: selectedProduct.userEmail,
     );
-    _products[_selectedProductIndex] = updatedProduct;
+    _products[selectedProductIndex] = updatedProduct;
     notifyListeners();
   }
 
-  void selectProduct(int index) {
-    _selectedProductIndex = index;
+  void selectProduct(String productId) {
+    _selectedProductId = productId;
   }
 
   void toggleDisplayMode() {
     _showFavourites = !_showFavourites;
-    _selectedProductIndex = null;
+    _selectedProductId = null;
     notifyListeners();
   }
 }

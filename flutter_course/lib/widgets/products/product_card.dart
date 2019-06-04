@@ -40,18 +40,19 @@ class ProductCard extends StatelessWidget {
           alignment: MainAxisAlignment.center,
           children: <Widget>[
             IconButton(
-              icon: Icon(Icons.info),
-              color: Theme.of(context).accentColor,
-              onPressed: () => Navigator.pushNamed<bool>(
-                  context, '/product/' + productIndex.toString()),
-            ),
+                icon: Icon(Icons.info),
+                color: Theme.of(context).accentColor,
+                onPressed: () => Navigator.pushNamed<bool>(
+                      context,
+                      '/product/' + model.allProducts[productIndex].id,
+                    )),
             IconButton(
               icon: Icon(model.allProducts[productIndex].isFavourite
                   ? Icons.favorite
                   : Icons.favorite_border),
               color: Colors.red,
               onPressed: () {
-                model.selectProduct(productIndex);
+                model.selectProduct(model.allProducts[productIndex].id);
                 model.toggleProductFavouriteStatus();
               },
             ),
