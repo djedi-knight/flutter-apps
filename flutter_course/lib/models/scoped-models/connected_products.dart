@@ -53,7 +53,7 @@ mixin ProductsModel on ConnectedProductsModel {
     _isLoading = true;
     return http
         .get('https://fluttercourse-c2b8e.firebaseio.com/products.json')
-        .then((http.Response response) {
+        .then<Null>((http.Response response) {
       final List<Product> fetchedProductList = [];
       final Map<String, dynamic> productListData = json.decode(response.body);
       if (productListData == null) {
@@ -77,6 +77,11 @@ mixin ProductsModel on ConnectedProductsModel {
       _selectedProductId = null;
       _isLoading = false;
       notifyListeners();
+      return;
+    }).catchError((error) {
+      _isLoading = false;
+      notifyListeners();
+      return;
     });
   }
 
@@ -100,7 +105,7 @@ mixin ProductsModel on ConnectedProductsModel {
       'https://fluttercourse-c2b8e.firebaseio.com/products.json',
       body: json.encode(productData),
     )
-        .then((http.Response response) {
+        .then<bool>((http.Response response) {
       if (response.statusCode != 200 && response.statusCode != 201) {
         _isLoading = false;
         notifyListeners();
@@ -120,10 +125,14 @@ mixin ProductsModel on ConnectedProductsModel {
       _isLoading = false;
       notifyListeners();
       return true;
+    }).catchError((error) {
+      _isLoading = false;
+      notifyListeners();
+      return false;
     });
   }
 
-  Future<Null> updateProduct(
+  Future<bool> updateProduct(
     String title,
     String description,
     String image,
@@ -145,7 +154,7 @@ mixin ProductsModel on ConnectedProductsModel {
       'https://fluttercourse-c2b8e.firebaseio.com/products/${selectedProduct.id}.json',
       body: json.encode(updateData),
     )
-        .then((http.Response response) {
+        .then<bool>((http.Response response) {
       Product updatedProduct = Product(
         id: selectedProduct.id,
         title: title,
@@ -158,21 +167,31 @@ mixin ProductsModel on ConnectedProductsModel {
       _products[selectedProductIndex] = updatedProduct;
       _isLoading = false;
       notifyListeners();
+      return true;
+    }).catchError((error) {
+      _isLoading = false;
+      notifyListeners();
+      return false;
     });
   }
 
-  void deleteProduct() {
+  Future<bool> deleteProduct() {
     _isLoading = true;
     final deletedProductId = selectedProductIndex;
     _products.removeAt(selectedProductIndex);
     _selectedProductId = null;
     notifyListeners();
-    http
+    return http
         .delete(
             'https://fluttercourse-c2b8e.firebaseio.com/products/$deletedProductId.json')
-        .then((http.Response response) {
+        .then<bool>((http.Response response) {
       _isLoading = false;
       notifyListeners();
+      return true;
+    }).catchError((error) {
+      _isLoading = false;
+      notifyListeners();
+      return false;
     });
   }
 
