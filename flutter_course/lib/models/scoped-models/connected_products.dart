@@ -49,6 +49,37 @@ mixin ProductsModel on ConnectedProductsModel {
     return _showFavourites;
   }
 
+  Future<Null> fetchProducts() {
+    _isLoading = true;
+    return http
+        .get('https://fluttercourse-c2b8e.firebaseio.com/products.json')
+        .then((http.Response response) {
+      final List<Product> fetchedProductList = [];
+      final Map<String, dynamic> productListData = json.decode(response.body);
+      if (productListData == null) {
+        _isLoading = false;
+        notifyListeners();
+        return;
+      }
+      productListData.forEach((String productId, dynamic productData) {
+        final Product product = Product(
+          id: productId,
+          title: productData['title'],
+          description: productData['description'],
+          price: productData['price'],
+          image: productData['image'],
+          userId: productData['userId'],
+          userEmail: productData['userEmail'],
+        );
+        fetchedProductList.add(product);
+      });
+      _products = fetchedProductList;
+      _selectedProductId = null;
+      _isLoading = false;
+      notifyListeners();
+    });
+  }
+
   Future<Null> addProduct(
     String title,
     String description,
@@ -134,36 +165,6 @@ mixin ProductsModel on ConnectedProductsModel {
         .delete(
             'https://fluttercourse-c2b8e.firebaseio.com/products/$deletedProductId.json')
         .then((http.Response response) {
-      _isLoading = false;
-      notifyListeners();
-    });
-  }
-
-  Future<Null> fetchProducts() {
-    _isLoading = true;
-    return http
-        .get('https://fluttercourse-c2b8e.firebaseio.com/products.json')
-        .then((http.Response response) {
-      final List<Product> fetchedProductList = [];
-      final Map<String, dynamic> productListData = json.decode(response.body);
-      if (productListData == null) {
-        _isLoading = false;
-        notifyListeners();
-        return;
-      }
-      productListData.forEach((String productId, dynamic productData) {
-        final Product product = Product(
-          id: productId,
-          title: productData['title'],
-          description: productData['description'],
-          price: productData['price'],
-          image: productData['image'],
-          userId: productData['userId'],
-          userEmail: productData['userEmail'],
-        );
-        fetchedProductList.add(product);
-      });
-      _products = fetchedProductList;
       _isLoading = false;
       notifyListeners();
     });
