@@ -230,6 +230,25 @@ mixin UserModel on ConnectedProductsModel {
       password: password,
     );
   }
+
+  Future<Map<String, dynamic>> signup(String email, String password) async {
+    final Map<String, dynamic> authData = {
+      'email': email,
+      'password': password,
+      'returnSecureToken': true
+    };
+    final http.Response response = await http.post(
+      'https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key=AIzaSyA8TifPydidNA_Ht--7JpiimOsG2Fbnbpk',
+      body: json.encode(authData),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    );
+    return {
+      'success': true,
+      'response': response,
+    };
+  }
 }
 
 mixin UtilityModel on ConnectedProductsModel {
