@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:scoped_model/scoped_model.dart';
@@ -226,6 +227,8 @@ mixin ProductsModel on ConnectedProductsModel {
 }
 
 mixin UserModel on ConnectedProductsModel {
+  Timer _authTimer;
+
   User get user {
     return _authenticatedUser;
   }
@@ -271,11 +274,16 @@ mixin UserModel on ConnectedProductsModel {
         email: email,
         token: responseData['idToken'],
       );
+      setAuthTimeout(int.parse(responseData['expiresIn']));
+      final DateTime now = DateTime.now();
+      final DateTime expiryTime =
+          now.add(Duration(seconds: int.parse(responseData['expiresIn'])));
       final SharedPreferences preferences =
           await SharedPreferences.getInstance();
       preferences.setString('token', responseData['idToken']);
       preferences.setString('userId', responseData['localId']);
       preferences.setString('userEmail', email);
+      preferences.setString('expiryTime', expiryTime.toIso8601String());
     } else if (responseData['error']['message'] == 'EMAIL_NOT_FOUND') {
       message = 'This email was not found.';
     } else if (responseData['error']['message'] == 'EMAIL_EXISTS') {
@@ -297,6 +305,15 @@ mixin UserModel on ConnectedProductsModel {
     final SharedPreferences preferences = await SharedPreferences.getInstance();
     final String token = preferences.getString('token');
     if (token != null) {
+      final String expiryTimeString = preferences.getString('expiryTime');
+      final DateTime now = DateTime.now();
+      final DateTime expiryTime = DateTime.parse(expiryTimeString);
+      if (expiryTime.isBefore(now)) {
+        _authenticatedUser = null;
+        return;
+      }
+      final int tokenLifespan = expiryTime.difference(now).inSeconds;
+      setAuthTimeout(tokenLifespan);
       final String userId = preferences.getString('userId');
       final String userEmail = preferences.getString('userEmail');
       _authenticatedUser = User(
@@ -310,10 +327,15 @@ mixin UserModel on ConnectedProductsModel {
 
   void logout() async {
     _authenticatedUser = null;
+    _authTimer.cancel();
     final SharedPreferences preferences = await SharedPreferences.getInstance();
     preferences.remove('token');
     preferences.remove('userId');
     preferences.remove('userEmail');
+  }
+
+  void setAuthTimeout(int time) {
+    _authTimer = Timer(Duration(seconds: time), logout);
   }
 }
 
