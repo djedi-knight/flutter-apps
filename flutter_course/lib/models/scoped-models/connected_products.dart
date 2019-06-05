@@ -1,6 +1,7 @@
 import 'dart:convert';
-import 'package:scoped_model/scoped_model.dart';
 import 'package:http/http.dart' as http;
+import 'package:scoped_model/scoped_model.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../auth.dart';
 import '../product.dart';
@@ -266,6 +267,9 @@ mixin UserModel on ConnectedProductsModel {
         email: email,
         token: responseData['idToken'],
       );
+      final SharedPreferences preferences =
+          await SharedPreferences.getInstance();
+      preferences.setString('token', responseData['idToken']);
     } else if (responseData['error']['message'] == 'EMAIL_NOT_FOUND') {
       message = 'This email was not found.';
     } else if (responseData['error']['message'] == 'EMAIL_EXISTS') {
@@ -281,6 +285,12 @@ mixin UserModel on ConnectedProductsModel {
       'success': !hasError,
       'message': message,
     };
+  }
+
+  void autoAuthenticate() async {
+    final SharedPreferences preferences = await SharedPreferences.getInstance();
+    final String token = preferences.getString('token');
+    if (token != null) {}
   }
 }
 
