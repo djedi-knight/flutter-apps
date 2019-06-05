@@ -336,6 +336,7 @@ mixin UserModel on ConnectedProductsModel {
   void logout() async {
     _authenticatedUser = null;
     _authTimer.cancel();
+    _userSubject.add(false);
     final SharedPreferences preferences = await SharedPreferences.getInstance();
     preferences.remove('token');
     preferences.remove('userId');
@@ -343,10 +344,7 @@ mixin UserModel on ConnectedProductsModel {
   }
 
   void setAuthTimeout(int time) {
-    _authTimer = Timer(Duration(seconds: time), () {
-      logout();
-      _userSubject.add(false);
-    });
+    _authTimer = Timer(Duration(seconds: time), logout);
   }
 }
 
