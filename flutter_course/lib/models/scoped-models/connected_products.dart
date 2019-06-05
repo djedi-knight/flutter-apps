@@ -226,6 +226,10 @@ mixin ProductsModel on ConnectedProductsModel {
 }
 
 mixin UserModel on ConnectedProductsModel {
+  User get user {
+    return _authenticatedUser;
+  }
+
   Future<Map<String, dynamic>> authenticate(
     String email,
     String password, [
@@ -270,6 +274,8 @@ mixin UserModel on ConnectedProductsModel {
       final SharedPreferences preferences =
           await SharedPreferences.getInstance();
       preferences.setString('token', responseData['idToken']);
+      preferences.setString('userEmail', email);
+      preferences.setString('userId', responseData['localId']);
     } else if (responseData['error']['message'] == 'EMAIL_NOT_FOUND') {
       message = 'This email was not found.';
     } else if (responseData['error']['message'] == 'EMAIL_EXISTS') {
@@ -290,7 +296,16 @@ mixin UserModel on ConnectedProductsModel {
   void autoAuthenticate() async {
     final SharedPreferences preferences = await SharedPreferences.getInstance();
     final String token = preferences.getString('token');
-    if (token != null) {}
+    if (token != null) {
+      final String userEmail = preferences.getString('userEmail');
+      final String userId = preferences.getString('userId');
+      _authenticatedUser = User(
+        id: userId,
+        email: userEmail,
+        token: token,
+      );
+      notifyListeners();
+    }
   }
 }
 
