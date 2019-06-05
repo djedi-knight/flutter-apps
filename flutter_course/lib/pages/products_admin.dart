@@ -3,12 +3,13 @@ import 'package:flutter/material.dart';
 import '../models/scoped-models/main.dart';
 import '../pages/product_edit.dart';
 import '../pages/product_list.dart';
+import '../widgets/ui_elements/logout_list_tile.dart';
 
 class ProductsAdminPage extends StatelessWidget {
   final MainModel model;
 
   ProductsAdminPage(this.model);
-  
+
   Widget _buildSideDrawer(BuildContext context) {
     return Drawer(
       child: Column(
@@ -24,6 +25,8 @@ class ProductsAdminPage extends StatelessWidget {
               Navigator.pushReplacementNamed(context, '/products');
             },
           ),
+          Divider(),
+          LogoutListTile(),
         ],
       ),
     );

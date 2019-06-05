@@ -274,8 +274,8 @@ mixin UserModel on ConnectedProductsModel {
       final SharedPreferences preferences =
           await SharedPreferences.getInstance();
       preferences.setString('token', responseData['idToken']);
-      preferences.setString('userEmail', email);
       preferences.setString('userId', responseData['localId']);
+      preferences.setString('userEmail', email);
     } else if (responseData['error']['message'] == 'EMAIL_NOT_FOUND') {
       message = 'This email was not found.';
     } else if (responseData['error']['message'] == 'EMAIL_EXISTS') {
@@ -297,8 +297,8 @@ mixin UserModel on ConnectedProductsModel {
     final SharedPreferences preferences = await SharedPreferences.getInstance();
     final String token = preferences.getString('token');
     if (token != null) {
-      final String userEmail = preferences.getString('userEmail');
       final String userId = preferences.getString('userId');
+      final String userEmail = preferences.getString('userEmail');
       _authenticatedUser = User(
         id: userId,
         email: userEmail,
@@ -306,6 +306,14 @@ mixin UserModel on ConnectedProductsModel {
       );
       notifyListeners();
     }
+  }
+
+  void logout() async {
+    _authenticatedUser = null;
+    final SharedPreferences preferences = await SharedPreferences.getInstance();
+    preferences.remove('token');
+    preferences.remove('userId');
+    preferences.remove('userEmail');
   }
 }
 
