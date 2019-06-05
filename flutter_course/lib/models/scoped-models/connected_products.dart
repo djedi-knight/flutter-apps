@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:rxdart/subjects.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -228,9 +229,14 @@ mixin ProductsModel on ConnectedProductsModel {
 
 mixin UserModel on ConnectedProductsModel {
   Timer _authTimer;
+  PublishSubject<bool> _userSubject = PublishSubject();
 
   User get user {
     return _authenticatedUser;
+  }
+
+  PublishSubject<bool> get userSubject {
+    return _userSubject;
   }
 
   Future<Map<String, dynamic>> authenticate(
@@ -294,6 +300,7 @@ mixin UserModel on ConnectedProductsModel {
       message = 'Something went wrong.';
     }
     _isLoading = false;
+    _userSubject.add(true);
     notifyListeners();
     return {
       'success': !hasError,
@@ -321,6 +328,7 @@ mixin UserModel on ConnectedProductsModel {
         email: userEmail,
         token: token,
       );
+      _userSubject.add(true);
       notifyListeners();
     }
   }
@@ -335,7 +343,10 @@ mixin UserModel on ConnectedProductsModel {
   }
 
   void setAuthTimeout(int time) {
-    _authTimer = Timer(Duration(seconds: time), logout);
+    _authTimer = Timer(Duration(seconds: time), () {
+      logout();
+      _userSubject.add(false);
+    });
   }
 }
 
