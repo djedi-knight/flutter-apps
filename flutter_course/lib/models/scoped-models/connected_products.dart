@@ -53,7 +53,8 @@ mixin ProductsModel on ConnectedProductsModel {
   Future<Null> fetchProducts() {
     _isLoading = true;
     return http
-        .get('https://fluttercourse-c2b8e.firebaseio.com/products.json')
+        .get(
+            'https://fluttercourse-c2b8e.firebaseio.com/products.json?auth=${_authenticatedUser.token}')
         .then<Null>((http.Response response) {
       final List<Product> fetchedProductList = [];
       final Map<String, dynamic> productListData = json.decode(response.body);
@@ -103,7 +104,7 @@ mixin ProductsModel on ConnectedProductsModel {
     };
     try {
       final http.Response response = await http.post(
-        'https://fluttercourse-c2b8e.firebaseio.com/products.json',
+        'https://fluttercourse-c2b8e.firebaseio.com/products.json?auth=${_authenticatedUser.token}',
         body: json.encode(productData),
       );
       if (response.statusCode != 200 && response.statusCode != 201) {
@@ -151,7 +152,7 @@ mixin ProductsModel on ConnectedProductsModel {
     };
     return http
         .put(
-      'https://fluttercourse-c2b8e.firebaseio.com/products/${selectedProduct.id}.json',
+      'https://fluttercourse-c2b8e.firebaseio.com/products/${selectedProduct.id}.json?auth=${_authenticatedUser.token}',
       body: json.encode(updateData),
     )
         .then<bool>((http.Response response) {
@@ -177,13 +178,13 @@ mixin ProductsModel on ConnectedProductsModel {
 
   Future<bool> deleteProduct() {
     _isLoading = true;
-    final deletedProductId = selectedProductIndex;
+    final deletedProductId = _selectedProductId;
     _products.removeAt(selectedProductIndex);
     _selectedProductId = null;
     notifyListeners();
     return http
         .delete(
-            'https://fluttercourse-c2b8e.firebaseio.com/products/$deletedProductId.json')
+            'https://fluttercourse-c2b8e.firebaseio.com/products/$deletedProductId.json?auth=${_authenticatedUser.token}')
         .then<bool>((http.Response response) {
       _isLoading = false;
       notifyListeners();
@@ -256,9 +257,15 @@ mixin UserModel on ConnectedProductsModel {
     }
     final Map<String, dynamic> responseData = json.decode(response.body);
     bool hasError = true;
-    String message = 'Authentication success!';
+    String message = 'Something went wrong.';
     if (responseData.containsKey('idToken')) {
       hasError = false;
+      message = 'Authentication success!';
+      _authenticatedUser = User(
+        id: responseData['localId'],
+        email: email,
+        token: responseData['idToken'],
+      );
     } else if (responseData['error']['message'] == 'EMAIL_NOT_FOUND') {
       message = 'This email was not found.';
     } else if (responseData['error']['message'] == 'EMAIL_EXISTS') {
@@ -274,11 +281,6 @@ mixin UserModel on ConnectedProductsModel {
       'success': !hasError,
       'message': message,
     };
-    // _authenticatedUser = User(
-    //   id: 'user-id',
-    //   email: email,
-    //   password: password,
-    // );
   }
 }
 
