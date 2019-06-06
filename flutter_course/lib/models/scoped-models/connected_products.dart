@@ -57,7 +57,8 @@ mixin ProductsModel on ConnectedProductsModel {
     _isLoading = true;
     return http
         .get(
-            'https://fluttercourse-c2b8e.firebaseio.com/products.json?auth=${_authenticatedUser.token}')
+      'https://fluttercourse-c2b8e.firebaseio.com/products.json?auth=${_authenticatedUser.token}',
+    )
         .then<Null>((http.Response response) {
       final List<Product> fetchedProductList = [];
       final Map<String, dynamic> productListData = json.decode(response.body);
@@ -187,7 +188,8 @@ mixin ProductsModel on ConnectedProductsModel {
     notifyListeners();
     return http
         .delete(
-            'https://fluttercourse-c2b8e.firebaseio.com/products/$deletedProductId.json?auth=${_authenticatedUser.token}')
+      'https://fluttercourse-c2b8e.firebaseio.com/products/$deletedProductId.json?auth=${_authenticatedUser.token}',
+    )
         .then<bool>((http.Response response) {
       _isLoading = false;
       notifyListeners();
@@ -199,7 +201,7 @@ mixin ProductsModel on ConnectedProductsModel {
     });
   }
 
-  void toggleProductFavouriteStatus() {
+  void toggleProductFavouriteStatus() async {
     final bool isCurrentlyFavourite = selectedProduct.isFavourite;
     final bool newFavouriteStatus = !isCurrentlyFavourite;
     final Product updatedProduct = Product(
@@ -214,6 +216,31 @@ mixin ProductsModel on ConnectedProductsModel {
     );
     _products[selectedProductIndex] = updatedProduct;
     notifyListeners();
+    http.Response response;
+    if (newFavouriteStatus) {
+      response = await http.put(
+        'https://fluttercourse-c2b8e.firebaseio.com/products/${selectedProduct.id}/wishlistUsers/${_authenticatedUser.id}.json?auth=${_authenticatedUser.token}',
+        body: json.encode(true),
+      );
+    } else {
+      response = await http.delete(
+        'https://fluttercourse-c2b8e.firebaseio.com/products/${selectedProduct.id}/wishlistUsers/${_authenticatedUser.id}.json?auth=${_authenticatedUser.token}',
+      );
+    }
+    if (response.statusCode != 200 && response.statusCode != 201) {
+      final Product updatedProduct = Product(
+        id: selectedProduct.id,
+        title: selectedProduct.title,
+        description: selectedProduct.description,
+        image: selectedProduct.image,
+        price: selectedProduct.price,
+        isFavourite: !newFavouriteStatus,
+        userId: selectedProduct.userId,
+        userEmail: selectedProduct.userEmail,
+      );
+      _products[selectedProductIndex] = updatedProduct;
+      notifyListeners();
+    }
   }
 
   void selectProduct(String productId) {
