@@ -74,6 +74,10 @@ mixin ProductsModel on ConnectedProductsModel {
           description: productData['description'],
           price: productData['price'],
           image: productData['image'],
+          isFavourite: productData['wishlistUsers'] == null
+              ? false
+              : (productData['wishlistUsers'] as Map<String, dynamic>)
+                  .containsKey(_authenticatedUser.id),
           userId: productData['userId'],
           userEmail: productData['userEmail'],
         );
@@ -241,6 +245,7 @@ mixin ProductsModel on ConnectedProductsModel {
       _products[selectedProductIndex] = updatedProduct;
       notifyListeners();
     }
+    selectProduct(null);
   }
 
   void selectProduct(String productId) {
