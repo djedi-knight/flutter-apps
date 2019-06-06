@@ -53,7 +53,7 @@ mixin ProductsModel on ConnectedProductsModel {
     return _showFavourites;
   }
 
-  Future<Null> fetchProducts() {
+  Future<Null> fetchProducts({onlyForUser = false}) {
     _isLoading = true;
     return http
         .get(
@@ -83,7 +83,11 @@ mixin ProductsModel on ConnectedProductsModel {
         );
         fetchedProductList.add(product);
       });
-      _products = fetchedProductList;
+      _products = onlyForUser
+          ? fetchedProductList.where((Product product) {
+              return product.userId == _authenticatedUser.id;
+            }).toList()
+          : fetchedProductList;
       _selectedProductId = null;
       _isLoading = false;
       notifyListeners();
