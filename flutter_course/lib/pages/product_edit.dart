@@ -3,6 +3,7 @@ import 'package:scoped_model/scoped_model.dart';
 
 import '../models/scoped-models/main.dart';
 import '../models/product.dart';
+import '../widgets/form_inputs/location.dart';
 import '../widgets/helpers/ensure-visible.dart';
 
 class ProductEditPage extends StatefulWidget {
@@ -129,6 +130,10 @@ class _ProductEditPageState extends State<ProductEditPage> {
               _buildTitleTextField(product),
               _buildDescriptionTextField(product),
               _buildPriceTextField(product),
+              SizedBox(
+                height: 10.0,
+              ),
+              LocationInput(),
               SizedBox(
                 height: 10.0,
               ),
