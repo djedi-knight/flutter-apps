@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:map_view/map_view.dart';
 
+import '../../models/location.dart';
 import '../helpers/ensure-visible.dart';
 
 class LocationInput extends StatefulWidget {
@@ -15,6 +16,7 @@ class LocationInput extends StatefulWidget {
 
 class _LocationInputState extends State<LocationInput> {
   Uri _staticMapUri;
+  LocationData _location;
   final FocusNode _addressInputFocusNode = FocusNode();
   final TextEditingController _addressInputController = TextEditingController();
 
@@ -32,6 +34,9 @@ class _LocationInputState extends State<LocationInput> {
 
   void _getStaticMap(String address) async {
     if (address.isEmpty) {
+      setState(() {
+        _staticMapUri = null;
+      });
       return;
     }
     final Uri uri = Uri.https(
@@ -44,11 +49,15 @@ class _LocationInputState extends State<LocationInput> {
     );
     final http.Response response = await http.get(uri);
     final Map<String, dynamic> addressData = json.decode(response.body);
-    print(addressData);
     final String formattedAddress =
         addressData['results'][0]['formatted_address'];
     final Map<String, dynamic> coordinates =
         addressData['results'][0]['geometry']['location'];
+    _location = LocationData(
+      latitude: coordinates['lat'],
+      longitude: coordinates['lng'],
+      address: formattedAddress,
+    );
     final StaticMapProvider staticMapProvider =
         StaticMapProvider('AIzaSyBR6pVaeskMSlsOBhRccmT7tgBcR0yOSs8');
     final Uri staticMapUri = staticMapProvider.getStaticUriWithMarkers(
@@ -56,20 +65,20 @@ class _LocationInputState extends State<LocationInput> {
         Marker(
           'position',
           'Position',
-          coordinates['lat'],
-          coordinates['lng'],
+          _location.latitude,
+          _location.longitude,
         ),
       ],
       center: Location(
-        coordinates['lat'],
-        coordinates['lng'],
+        _location.latitude,
+        _location.longitude,
       ),
       width: 500,
       height: 300,
       maptype: StaticMapViewType.roadmap,
     );
     setState(() {
-      _addressInputController.text = formattedAddress;
+      _addressInputController.text = _location.address;
       _staticMapUri = staticMapUri;
     });
   }
@@ -89,13 +98,20 @@ class _LocationInputState extends State<LocationInput> {
           child: TextFormField(
             focusNode: _addressInputFocusNode,
             controller: _addressInputController,
+            validator: (String value) {
+              if (_location == null || value.isEmpty) {
+                return 'No valid location found.';
+              }
+            },
             decoration: InputDecoration(labelText: 'Address'),
           ),
         ),
         SizedBox(
           height: 10.0,
         ),
-        _staticMapUri == null ? Container() : Image.network(_staticMapUri.toString()),
+        _staticMapUri == null
+            ? Container()
+            : Image.network(_staticMapUri.toString()),
       ],
     );
   }
