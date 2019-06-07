@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import './location.dart';
+
 class Product {
   final String id;
   final String title;
@@ -9,6 +11,7 @@ class Product {
   final bool isFavourite;
   final String userId;
   final String userEmail;
+  final LocationData location;
 
   Product({
     @required this.id,
@@ -18,6 +21,7 @@ class Product {
     @required this.image,
     @required this.userId,
     @required this.userEmail,
+    @required this.location,
     this.isFavourite = false,
   });
 }

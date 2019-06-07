@@ -82,6 +82,11 @@ mixin ProductsModel on ConnectedProductsModel {
                   .containsKey(_authenticatedUser.id),
           userId: productData['userId'],
           userEmail: productData['userEmail'],
+          location: LocationData(
+            latitude: productData['loc_lat'],
+            longitude: productData['loc_lng'],
+            address: productData['loc_address'],
+          ),
         );
         fetchedProductList.add(product);
       });
@@ -141,6 +146,7 @@ mixin ProductsModel on ConnectedProductsModel {
         price: price,
         userId: _authenticatedUser.id,
         userEmail: _authenticatedUser.email,
+        location: location,
       );
       _products.add(newProduct);
       _isLoading = false;
