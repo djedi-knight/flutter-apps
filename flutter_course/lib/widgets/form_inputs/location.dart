@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:map_view/map_view.dart';
@@ -19,7 +21,6 @@ class _LocationInputState extends State<LocationInput> {
   @override
   void initState() {
     _addressInputFocusNode.addListener(_updateLocation);
-    _getStaticMap('');
     super.initState();
   }
 
@@ -42,18 +43,33 @@ class _LocationInputState extends State<LocationInput> {
       },
     );
     final http.Response response = await http.get(uri);
+    final Map<String, dynamic> addressData = json.decode(response.body);
+    print(addressData);
+    final String formattedAddress =
+        addressData['results'][0]['formatted_address'];
+    final Map<String, dynamic> coordinates =
+        addressData['results'][0]['geometry']['location'];
     final StaticMapProvider staticMapProvider =
         StaticMapProvider('AIzaSyBR6pVaeskMSlsOBhRccmT7tgBcR0yOSs8');
     final Uri staticMapUri = staticMapProvider.getStaticUriWithMarkers(
       [
-        Marker('position', 'Position', 41.40338, 2.17403),
+        Marker(
+          'position',
+          'Position',
+          coordinates['lat'],
+          coordinates['lng'],
+        ),
       ],
-      center: Location(41.40338, 2.17403),
+      center: Location(
+        coordinates['lat'],
+        coordinates['lng'],
+      ),
       width: 500,
       height: 300,
       maptype: StaticMapViewType.roadmap,
     );
     setState(() {
+      _addressInputController.text = formattedAddress;
       _staticMapUri = staticMapUri;
     });
   }
@@ -79,7 +95,7 @@ class _LocationInputState extends State<LocationInput> {
         SizedBox(
           height: 10.0,
         ),
-        Image.network(_staticMapUri.toString()),
+        _staticMapUri == null ? Container() : Image.network(_staticMapUri.toString()),
       ],
     );
   }
