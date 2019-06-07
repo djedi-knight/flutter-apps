@@ -7,6 +7,7 @@ import 'package:scoped_model/scoped_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../auth.dart';
+import '../location.dart';
 import '../product.dart';
 import '../user.dart';
 
@@ -105,6 +106,7 @@ mixin ProductsModel on ConnectedProductsModel {
     String description,
     String image,
     double price,
+    LocationData location,
   ) async {
     _isLoading = true;
     notifyListeners();
@@ -114,6 +116,11 @@ mixin ProductsModel on ConnectedProductsModel {
       'image':
           'https://cdn1.medicalnewstoday.com/content/images/articles/321/321618/dark-chocolate-and-cocoa-beans-on-a-table.jpg',
       'price': price,
+      'userId': _authenticatedUser.id,
+      'userEmail': _authenticatedUser.email,
+      'loc_lat': location.latitude,
+      'loc_lng': location.longitude,
+      'loc_address': location.address,
     };
     try {
       final http.Response response = await http.post(
