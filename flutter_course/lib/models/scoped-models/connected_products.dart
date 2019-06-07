@@ -262,6 +262,9 @@ mixin ProductsModel on ConnectedProductsModel {
 
   void selectProduct(String productId) {
     _selectedProductId = productId;
+    if (productId != null) {
+      notifyListeners();
+    }
   }
 
   void toggleDisplayMode() {
