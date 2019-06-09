@@ -164,6 +164,7 @@ mixin ProductsModel on ConnectedProductsModel {
     String description,
     String image,
     double price,
+    LocationData location,
   ) {
     _isLoading = true;
     notifyListeners();
@@ -175,6 +176,9 @@ mixin ProductsModel on ConnectedProductsModel {
       'price': price,
       'userId': selectedProduct.userId,
       'userEmail': selectedProduct.userEmail,
+      'loc_lat': location.latitude,
+      'loc_lng': location.longitude,
+      'loc_address': location.address,
     };
     return http
         .put(
@@ -190,6 +194,7 @@ mixin ProductsModel on ConnectedProductsModel {
         price: price,
         userId: selectedProduct.userId,
         userEmail: selectedProduct.userEmail,
+        location: location,
       );
       _products[selectedProductIndex] = updatedProduct;
       _isLoading = false;
@@ -235,6 +240,7 @@ mixin ProductsModel on ConnectedProductsModel {
       isFavourite: newFavouriteStatus,
       userId: selectedProduct.userId,
       userEmail: selectedProduct.userEmail,
+      location: selectedProduct.location,
     );
     _products[selectedProductIndex] = updatedProduct;
     notifyListeners();
@@ -259,6 +265,7 @@ mixin ProductsModel on ConnectedProductsModel {
         isFavourite: !newFavouriteStatus,
         userId: selectedProduct.userId,
         userEmail: selectedProduct.userEmail,
+        location: selectedProduct.location,
       );
       _products[selectedProductIndex] = updatedProduct;
       notifyListeners();
