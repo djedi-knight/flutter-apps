@@ -84,9 +84,11 @@ class _ProductsPageState extends State<ProductsPage> {
               MainModel model,
             ) {
               return IconButton(
-                icon: Icon(model.displayFavouritesOnly
-                    ? Icons.favorite
-                    : Icons.favorite_border),
+                icon: Icon(
+                  model.displayFavouritesOnly
+                      ? Icons.favorite
+                      : Icons.favorite_border,
+                ),
                 onPressed: () {
                   model.toggleDisplayMode();
                 },

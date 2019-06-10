@@ -17,7 +17,7 @@ class AddressTag extends StatelessWidget {
       child: Padding(
         padding: EdgeInsets.symmetric(
           horizontal: 6.0,
-          vertical: 2.5,
+          vertical: 8.0,
         ),
         child: Text(address),
       ),
