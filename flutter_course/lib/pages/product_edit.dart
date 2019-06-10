@@ -4,6 +4,7 @@ import 'package:scoped_model/scoped_model.dart';
 import '../models/scoped-models/main.dart';
 import '../models/location.dart';
 import '../models/product.dart';
+import '../widgets/form_inputs/image.dart';
 import '../widgets/form_inputs/location.dart';
 import '../widgets/helpers/ensure-visible.dart';
 
@@ -143,6 +144,10 @@ class _ProductEditPageState extends State<ProductEditPage> {
                 _setLocation,
                 product,
               ),
+              SizedBox(
+                height: 10.0,
+              ),
+              ImageInput(),
               SizedBox(
                 height: 10.0,
               ),
