@@ -74,7 +74,7 @@ class ProductCard extends StatelessWidget {
             fit: BoxFit.cover,
           ),
           _buildTitlePriceRow(),
-          AddressTag('Sweet Revenge Bakery, Windsor, ON, Canada'),
+          AddressTag(product.location.address),
           _buildActionButtons(context),
         ],
       ),
