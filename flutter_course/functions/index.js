@@ -14,18 +14,12 @@ const gcconfig = {
   projectId: 'fluttercourse-c2b8e',
   keyFilename: 'config.json'
 };
-const gcs = require('@google-cloud/storage')(gcconfig);
+const {Storage} = require('@google-cloud/storage');
+const storage = new Storage(gcconfig);
 
 firebaseAdmin.initializeApp({
   credential: firebaseAdmin.credential.cert(require('./config.json'))
 });
-
-// // Create and Deploy Your First Cloud Functions
-// // https://firebase.google.com/docs/functions/write-firebase-functions
-//
-// exports.helloWorld = functions.https.onRequest((request, response) => {
-//  response.send("Hello from Firebase!");
-// });
 
 exports.storeImage = functions.https.onRequest((request, response) => {
   return cors(request, response, () => {
@@ -65,7 +59,7 @@ exports.storeImage = functions.https.onRequest((request, response) => {
     });
 
     busboy.on('finish', () => {
-      const bucket = gcs.bucket('fluttercourse-c2b8e.appspot.com');
+      const bucket = storage.bucket('fluttercourse-c2b8e.appspot.com');
       const id = uuid();
       let imagePath = 'images/' + id + '-' + uploadData.name;
 
@@ -106,7 +100,7 @@ exports.storeImage = functions.https.onRequest((request, response) => {
           });
         });
     });
-    
+
     return busboy.end(request.rawBody);
   });
 }); 
