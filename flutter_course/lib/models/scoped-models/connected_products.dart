@@ -1,7 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart';
+import 'package:mime/mime.dart';
 import 'package:rxdart/subjects.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -109,7 +112,7 @@ mixin ProductsModel on ConnectedProductsModel {
   Future<bool> addProduct(
     String title,
     String description,
-    String image,
+    File image,
     double price,
     LocationData location,
   ) async {
@@ -284,6 +287,27 @@ mixin ProductsModel on ConnectedProductsModel {
     _showFavourites = !_showFavourites;
     _selectedProductId = null;
     notifyListeners();
+  }
+
+  Future<Map<String, String>> uploadImage(
+    File image, {
+    String imagePath,
+  }) async {
+    final mimeTypeData = lookupMimeType(image.path).split('/');
+    final imageUploadRequest = http.MultipartRequest(
+      'POST',
+      Uri.parse(
+          'https://us-central1-fluttercourse-c2b8e.cloudfunctions.net/storeImage'),
+    );
+    final file = await http.MultipartFile.fromPath(
+      'image',
+      image.path,
+      contentType: MediaType(mimeTypeData[0], mimeTypeData[1]),
+    );
+    imageUploadRequest.files.add(file);
+    if (imagePath != null) {
+      imageUploadRequest.fields['imagePath'] = Uri.encodeComponent(imagePath);
+    }
   }
 }
 
