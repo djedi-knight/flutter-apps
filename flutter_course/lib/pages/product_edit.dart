@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 
@@ -20,7 +22,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
     'title': null,
     'description': null,
     'price': null,
-    'image': 'assets/food.jpg',
+    'image': null,
     'location': null,
   };
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -117,6 +119,10 @@ class _ProductEditPageState extends State<ProductEditPage> {
     _formData['location'] = location;
   }
 
+  void _setImage(File image) {
+    _formData['image'] = image;
+  }
+
   Widget _buildPageContent(BuildContext context, Product product) {
     final double deviceWidth = MediaQuery.of(context).size.width;
     final double targetWidth = deviceWidth > 550.0 ? 500.0 : deviceWidth * 0.95;
@@ -147,7 +153,7 @@ class _ProductEditPageState extends State<ProductEditPage> {
               SizedBox(
                 height: 10.0,
               ),
-              ImageInput(),
+              ImageInput(_setImage, product),
               SizedBox(
                 height: 10.0,
               ),
@@ -165,7 +171,8 @@ class _ProductEditPageState extends State<ProductEditPage> {
     Function setSelectedProduct, [
     int selectedProductIndex,
   ]) {
-    if (!_formKey.currentState.validate()) {
+    if (!_formKey.currentState.validate() ||
+        (_formData['image'] == null && selectedProductIndex == -1)) {
       return;
     }
     _formKey.currentState.save();
