@@ -296,7 +296,7 @@ mixin ProductsModel on ConnectedProductsModel {
     notifyListeners();
   }
 
-  Future<Map<String, String>> uploadImage(
+  Future<Map<String, dynamic>> uploadImage(
     File image, {
     String imagePath,
   }) async {
