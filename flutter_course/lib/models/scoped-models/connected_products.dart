@@ -78,7 +78,8 @@ mixin ProductsModel on ConnectedProductsModel {
           title: productData['title'],
           description: productData['description'],
           price: productData['price'],
-          image: productData['image'],
+          image: productData['imageUrl'],
+          imagePath: productData['imagePath'],
           isFavourite: productData['wishlistUsers'] == null
               ? false
               : (productData['wishlistUsers'] as Map<String, dynamic>)
@@ -126,8 +127,6 @@ mixin ProductsModel on ConnectedProductsModel {
     final Map<String, dynamic> productData = {
       'title': title,
       'description': description,
-      'image':
-          'https://cdn1.medicalnewstoday.com/content/images/articles/321/321618/dark-chocolate-and-cocoa-beans-on-a-table.jpg',
       'imagePath': uploadData['imagePath'],
       'imageUrl': uploadData['imageUrl'],
       'price': price,
@@ -153,6 +152,7 @@ mixin ProductsModel on ConnectedProductsModel {
         title: title,
         description: description,
         image: uploadData['imageUrl'],
+        imagePath: uploadData['imagePath'],
         price: price,
         userId: _authenticatedUser.id,
         userEmail: _authenticatedUser.email,
@@ -246,6 +246,7 @@ mixin ProductsModel on ConnectedProductsModel {
       title: selectedProduct.title,
       description: selectedProduct.description,
       image: selectedProduct.image,
+      imagePath: selectedProduct.imagePath,
       price: selectedProduct.price,
       isFavourite: newFavouriteStatus,
       userId: selectedProduct.userId,
@@ -271,6 +272,7 @@ mixin ProductsModel on ConnectedProductsModel {
         title: selectedProduct.title,
         description: selectedProduct.description,
         image: selectedProduct.image,
+        imagePath: selectedProduct.imagePath,
         price: selectedProduct.price,
         isFavourite: !newFavouriteStatus,
         userId: selectedProduct.userId,
