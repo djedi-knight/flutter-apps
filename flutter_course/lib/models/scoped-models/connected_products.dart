@@ -118,11 +118,18 @@ mixin ProductsModel on ConnectedProductsModel {
   ) async {
     _isLoading = true;
     notifyListeners();
+    final uploadData = await uploadImage(image);
+    if (uploadData == null) {
+      print('Upload failed!');
+      return false;
+    }
     final Map<String, dynamic> productData = {
       'title': title,
       'description': description,
       'image':
           'https://cdn1.medicalnewstoday.com/content/images/articles/321/321618/dark-chocolate-and-cocoa-beans-on-a-table.jpg',
+      'imagePath': uploadData['imagePath'],
+      'imageUrl': uploadData['imageUrl'],
       'price': price,
       'userId': _authenticatedUser.id,
       'userEmail': _authenticatedUser.email,
@@ -145,7 +152,7 @@ mixin ProductsModel on ConnectedProductsModel {
         id: responseData['name'],
         title: title,
         description: description,
-        image: image,
+        image: uploadData['imageUrl'],
         price: price,
         userId: _authenticatedUser.id,
         userEmail: _authenticatedUser.email,
@@ -307,6 +314,22 @@ mixin ProductsModel on ConnectedProductsModel {
     imageUploadRequest.files.add(file);
     if (imagePath != null) {
       imageUploadRequest.fields['imagePath'] = Uri.encodeComponent(imagePath);
+    }
+    imageUploadRequest.headers['Authorization'] =
+        'Bearer ${_authenticatedUser.token}';
+    try {
+      final streamedResponse = await imageUploadRequest.send();
+      final response = await http.Response.fromStream(streamedResponse);
+      if (response.statusCode != 200 && response.statusCode != 201) {
+        print('Something went wrong.');
+        print(json.decode(response.body));
+        return null;
+      }
+      final responseData = json.decode(response.body);
+      return responseData;
+    } catch (error) {
+      print(error);
+      return null;
     }
   }
 }
