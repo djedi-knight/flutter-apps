@@ -175,14 +175,25 @@ mixin ProductsModel on ConnectedProductsModel {
     File image,
     double price,
     LocationData location,
-  ) {
+  ) async {
     _isLoading = true;
     notifyListeners();
+    String imageUrl = selectedProduct.image;
+    String imagePath = selectedProduct.imagePath;
+    if (image != null) {
+      final uploadData = await uploadImage(image);
+      if (uploadData == null) {
+        print('Upload failed!');
+        return false;
+      }
+      imageUrl = uploadData['imageUrl'];
+      imagePath = uploadData['imagePath'];
+    }
     final Map<String, dynamic> updateData = {
       'title': title,
       'description': description,
-      'imageUrl': ,
-      'imagePath': ,
+      'imageUrl': imageUrl,
+      'imagePath': imagePath,
       'price': price,
       'userId': selectedProduct.userId,
       'userEmail': selectedProduct.userEmail,
@@ -190,17 +201,17 @@ mixin ProductsModel on ConnectedProductsModel {
       'loc_lng': location.longitude,
       'loc_address': location.address,
     };
-    return http
-        .put(
-      'https://fluttercourse-c2b8e.firebaseio.com/products/${selectedProduct.id}.json?auth=${_authenticatedUser.token}',
-      body: json.encode(updateData),
-    )
-        .then<bool>((http.Response response) {
+    try {
+      final http.Response response = await http.put(
+        'https://fluttercourse-c2b8e.firebaseio.com/products/${selectedProduct.id}.json?auth=${_authenticatedUser.token}',
+        body: json.encode(updateData),
+      );
       Product updatedProduct = Product(
         id: selectedProduct.id,
         title: title,
         description: description,
-        image: image,
+        image: imageUrl,
+        imagePath: imagePath,
         price: price,
         userId: selectedProduct.userId,
         userEmail: selectedProduct.userEmail,
@@ -210,11 +221,11 @@ mixin ProductsModel on ConnectedProductsModel {
       _isLoading = false;
       notifyListeners();
       return true;
-    }).catchError((error) {
+    } catch (error) {
       _isLoading = false;
       notifyListeners();
       return false;
-    });
+    }
   }
 
   Future<bool> deleteProduct() {
