@@ -61,7 +61,7 @@ exports.storeImage = functions.https.onRequest((request, response) => {
     busboy.on('finish', () => {
       const bucket = storage.bucket('fluttercourse-c2b8e.appspot.com');
       const id = uuid();
-      let imagePath = 'images/' + id + '-' + uploadData.name;
+      let imagePath = uploadData.name;
 
       if (oldImagePath) {
         imagePath = oldImagePath;
@@ -83,7 +83,7 @@ exports.storeImage = functions.https.onRequest((request, response) => {
           });
         })
         .then(() => {
-          return response.statusCode(201).json({
+          return response.status(201).json({
             imageUrl:
               'https://firebasestorage.googleapis.com/v0/b/' +
               bucket.name +
@@ -95,7 +95,7 @@ exports.storeImage = functions.https.onRequest((request, response) => {
           });
         })
         .catch(error => {
-          return response.statusCode(401).json({
+          return response.status(401).json({
             error: 'Unauthorized.'
           });
         });

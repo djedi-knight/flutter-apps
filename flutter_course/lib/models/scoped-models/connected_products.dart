@@ -181,7 +181,7 @@ mixin ProductsModel on ConnectedProductsModel {
     String imageUrl = selectedProduct.image;
     String imagePath = selectedProduct.imagePath;
     if (image != null) {
-      final uploadData = await uploadImage(image);
+      final uploadData = await uploadImage(image, imagePath: imagePath);
       if (uploadData == null) {
         print('Upload failed!');
         return false;
