@@ -14,7 +14,7 @@ const gcconfig = {
   projectId: 'fluttercourse-c2b8e',
   keyFilename: 'config.json'
 };
-const {Storage} = require('@google-cloud/storage');
+const { Storage } = require('@google-cloud/storage');
 const storage = new Storage(gcconfig);
 
 firebaseAdmin.initializeApp({
@@ -103,4 +103,14 @@ exports.storeImage = functions.https.onRequest((request, response) => {
 
     return busboy.end(request.rawBody);
   });
-}); 
+});
+
+exports.deleteImage = functions.database
+  .ref('/products/{productId}')
+  .onDelete(snapshot => {
+    const imageData = snapshot.val();
+    const imagePath = imageData.imagePath;
+
+    const bucket = storage.bucket('fluttercourse-c2b8e.appspot.com');
+    return bucket.file(imagePath).delete();
+  });

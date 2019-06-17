@@ -202,7 +202,7 @@ mixin ProductsModel on ConnectedProductsModel {
       'loc_address': location.address,
     };
     try {
-      final http.Response response = await http.put(
+      await http.put(
         'https://fluttercourse-c2b8e.firebaseio.com/products/${selectedProduct.id}.json?auth=${_authenticatedUser.token}',
         body: json.encode(updateData),
       );
