@@ -172,7 +172,7 @@ mixin ProductsModel on ConnectedProductsModel {
   Future<bool> updateProduct(
     String title,
     String description,
-    String image,
+    File image,
     double price,
     LocationData location,
   ) {
@@ -181,8 +181,8 @@ mixin ProductsModel on ConnectedProductsModel {
     final Map<String, dynamic> updateData = {
       'title': title,
       'description': description,
-      'image':
-          'https://cdn1.medicalnewstoday.com/content/images/articles/321/321618/dark-chocolate-and-cocoa-beans-on-a-table.jpg',
+      'imageUrl': ,
+      'imagePath': ,
       'price': price,
       'userId': selectedProduct.userId,
       'userEmail': selectedProduct.userEmail,
