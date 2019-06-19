@@ -80,7 +80,7 @@ class _ProductFABState extends State<ProductFAB> with TickerProviderStateMixin {
                   parent: _controller,
                   curve: Interval(
                     0.0,
-                    1.0,
+                    0.5,
                     curve: Curves.easeOut,
                   ),
                 ),
