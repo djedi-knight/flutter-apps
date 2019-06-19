@@ -33,6 +33,7 @@ dependencies:
   scoped_model: ^1.0.1
   shared_preferences: ^0.5.3+1
   rxdart: ^0.22.0
+  url_launcher: ^5.0.3
 
 dev_dependencies:
   flutter_test:

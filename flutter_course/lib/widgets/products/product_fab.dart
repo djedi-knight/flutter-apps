@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../models/scoped-models/main.dart';
 import '../../models/product.dart';
@@ -39,7 +40,14 @@ class _ProductFABState extends State<ProductFAB> {
                   Icons.mail,
                   color: Theme.of(context).primaryColor,
                 ),
-                onPressed: () {},
+                onPressed: () async {
+                  final url = 'mailto:${widget.product.userEmail}';
+                  if (await canLaunch(url)) {
+                    await launch(url);
+                  } else {
+                    throw 'Could not launch!';
+                  }
+                },
               ),
             ),
             Container(
