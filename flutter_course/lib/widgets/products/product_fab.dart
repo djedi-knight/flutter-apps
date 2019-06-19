@@ -16,7 +16,18 @@ class ProductFAB extends StatefulWidget {
   }
 }
 
-class _ProductFABState extends State<ProductFAB> {
+class _ProductFABState extends State<ProductFAB> with TickerProviderStateMixin {
+  AnimationController _controller;
+
+  @override
+  void initState() {
+    _controller = AnimationController(
+      vsync: this,
+      duration: Duration(milliseconds: 200),
+    );
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return ScopedModelDescendant(
@@ -32,41 +43,62 @@ class _ProductFABState extends State<ProductFAB> {
               height: 70.0,
               width: 56.0,
               alignment: FractionalOffset.topCenter,
-              child: FloatingActionButton(
-                heroTag: 'contact',
-                mini: true,
-                backgroundColor: Theme.of(context).cardColor,
-                child: Icon(
-                  Icons.mail,
-                  color: Theme.of(context).primaryColor,
+              child: ScaleTransition(
+                scale: CurvedAnimation(
+                  parent: _controller,
+                  curve: Interval(
+                    0.0,
+                    1.0,
+                    curve: Curves.easeOut,
+                  ),
                 ),
-                onPressed: () async {
-                  final url = 'mailto:${widget.product.userEmail}';
-                  if (await canLaunch(url)) {
-                    await launch(url);
-                  } else {
-                    throw 'Could not launch!';
-                  }
-                },
+                child: FloatingActionButton(
+                  heroTag: 'contact',
+                  mini: true,
+                  backgroundColor: Theme.of(context).cardColor,
+                  child: Icon(
+                    Icons.mail,
+                    color: Theme.of(context).primaryColor,
+                  ),
+                  onPressed: () async {
+                    final url = 'mailto:${widget.product.userEmail}';
+                    if (await canLaunch(url)) {
+                      await launch(url);
+                    } else {
+                      throw 'Could not launch!';
+                    }
+                  },
+                ),
               ),
             ),
             Container(
               height: 70.0,
               width: 56.0,
               alignment: FractionalOffset.topCenter,
-              child: FloatingActionButton(
-                heroTag: 'favourite',
-                mini: true,
-                backgroundColor: Theme.of(context).cardColor,
-                child: Icon(
-                  model.selectedProduct.isFavourite
-                      ? Icons.favorite
-                      : Icons.favorite_border,
-                  color: Colors.red,
+              child: ScaleTransition(
+                scale: CurvedAnimation(
+                  parent: _controller,
+                  curve: Interval(
+                    0.0,
+                    1.0,
+                    curve: Curves.easeOut,
+                  ),
                 ),
-                onPressed: () {
-                  model.toggleProductFavouriteStatus();
-                },
+                child: FloatingActionButton(
+                  heroTag: 'favourite',
+                  mini: true,
+                  backgroundColor: Theme.of(context).cardColor,
+                  child: Icon(
+                    model.selectedProduct.isFavourite
+                        ? Icons.favorite
+                        : Icons.favorite_border,
+                    color: Colors.red,
+                  ),
+                  onPressed: () {
+                    model.selectProduct(widget.product.id);
+                    model.toggleProductFavouriteStatus();
+                  },
+                ),
               ),
             ),
             Container(
@@ -75,7 +107,13 @@ class _ProductFABState extends State<ProductFAB> {
               child: FloatingActionButton(
                 heroTag: 'options',
                 child: Icon(Icons.more_vert),
-                onPressed: () {},
+                onPressed: () {
+                  if (_controller.isDismissed) {
+                    _controller.forward();
+                  } else {
+                    _controller.reverse();
+                  }
+                },
               ),
             ),
           ],
