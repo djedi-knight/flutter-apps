@@ -457,6 +457,7 @@ mixin UserModel on ConnectedProductsModel {
     _authenticatedUser = null;
     _authTimer.cancel();
     _userSubject.add(false);
+    _selectedProductId = null;
     final SharedPreferences preferences = await SharedPreferences.getInstance();
     preferences.remove('token');
     preferences.remove('userId');
