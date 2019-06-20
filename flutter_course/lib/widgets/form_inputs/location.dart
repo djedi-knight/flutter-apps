@@ -130,18 +130,38 @@ class _LocationInputState extends State<LocationInput> {
 
   void _getUserLocation() async {
     final location.Location currentLocation = location.Location();
-    final location.LocationData currentLocationData =
-        await currentLocation.getLocation();
-    final String address = await _getAddress(
-      currentLocationData.latitude,
-      currentLocationData.longitude,
-    );
-    _getStaticMap(
-      address,
-      geocode: false,
-      latitude: currentLocationData.latitude,
-      longitude: currentLocationData.longitude,
-    );
+    try {
+      final location.LocationData currentLocationData =
+          await currentLocation.getLocation();
+      final String address = await _getAddress(
+        currentLocationData.latitude,
+        currentLocationData.longitude,
+      );
+      _getStaticMap(
+        address,
+        geocode: false,
+        latitude: currentLocationData.latitude,
+        longitude: currentLocationData.longitude,
+      );
+    } catch (error) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Location Error'),
+            content: Text('Please add an address manually.'),
+            actions: <Widget>[
+              FlatButton(
+                child: Text('OK'),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
   }
 
   void _updateLocation() {
