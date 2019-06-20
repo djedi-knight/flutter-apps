@@ -91,38 +91,48 @@ class ProductPage extends StatelessWidget {
         return Future.value(false);
       },
       child: Scaffold(
-        appBar: AppBar(
-          title: Text(product.title),
-        ),
-        body: Center(
-          child: Column(
-            children: <Widget>[
-              Hero(
-                tag: product.id,
-                child: FadeInImage(
-                  image: NetworkImage(product.image),
-                  placeholder: AssetImage('assets/background.jpg'),
-                  height: 300.0,
-                  fit: BoxFit.cover,
+        // appBar: AppBar(
+        //   title: Text(product.title),
+        // ),
+        body: CustomScrollView(
+          slivers: <Widget>[
+            SliverAppBar(
+              expandedHeight: 256.0,
+              pinned: true,
+              flexibleSpace: FlexibleSpaceBar(
+                title: Text(product.title),
+                background: Hero(
+                  tag: product.id,
+                  child: FadeInImage(
+                    image: NetworkImage(product.image),
+                    placeholder: AssetImage('assets/background.jpg'),
+                    height: 300.0,
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
-              Container(
-                padding: EdgeInsets.all(10.0),
-                child: TitleDefault(product.title),
-              ),
-              _buildAddressPriceRow(
-                product.location.address,
-                product.price,
-              ),
-              Container(
-                padding: EdgeInsets.all(10.0),
-                child: Text(
-                  product.description,
-                  textAlign: TextAlign.center,
+            ),
+            SliverList(
+              delegate: SliverChildListDelegate([
+                Container(
+                  alignment: Alignment.center,
+                  padding: EdgeInsets.all(10.0),
+                  child: TitleDefault(product.title),
                 ),
-              ),
-            ],
-          ),
+                _buildAddressPriceRow(
+                  product.location.address,
+                  product.price,
+                ),
+                Container(
+                  padding: EdgeInsets.all(10.0),
+                  child: Text(
+                    product.description,
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ]),
+            ),
+          ],
         ),
         floatingActionButton: ProductFAB(product),
       ),
