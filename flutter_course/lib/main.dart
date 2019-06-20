@@ -9,6 +9,7 @@ import './pages/auth.dart';
 import './pages/product.dart';
 import './pages/products_admin.dart';
 import './pages/products.dart';
+import './widgets/helpers/custom_route.dart';
 
 void main() {
   // debugPaintSizeEnabled = true;
@@ -73,7 +74,7 @@ class _MyAppState extends State<MyApp> {
                 _model.allProducts.firstWhere((Product product) {
               return product.id == productId;
             });
-            return MaterialPageRoute<bool>(
+            return CustomRoute<bool>(
               builder: (BuildContext context) =>
                   !_isAuthenticated ? AuthPage() : ProductPage(product),
             );
