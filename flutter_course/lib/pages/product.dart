@@ -97,11 +97,14 @@ class ProductPage extends StatelessWidget {
         body: Center(
           child: Column(
             children: <Widget>[
-              FadeInImage(
-                image: NetworkImage(product.image),
-                placeholder: AssetImage('assets/background.jpg'),
-                height: 300.0,
-                fit: BoxFit.cover,
+              Hero(
+                tag: product.id,
+                child: FadeInImage(
+                  image: NetworkImage(product.image),
+                  placeholder: AssetImage('assets/background.jpg'),
+                  height: 300.0,
+                  fit: BoxFit.cover,
+                ),
               ),
               Container(
                 padding: EdgeInsets.all(10.0),
