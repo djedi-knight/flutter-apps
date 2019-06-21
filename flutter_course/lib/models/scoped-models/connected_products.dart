@@ -60,6 +60,7 @@ mixin ProductsModel on ConnectedProductsModel {
 
   Future<Null> fetchProducts({onlyForUser = false}) {
     _isLoading = true;
+    _products = [];
     return http
         .get(
       'https://fluttercourse-c2b8e.firebaseio.com/products.json?auth=${_authenticatedUser.token}',
