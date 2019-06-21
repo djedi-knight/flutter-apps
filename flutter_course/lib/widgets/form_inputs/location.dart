@@ -7,6 +7,7 @@ import 'package:map_view/map_view.dart';
 
 import '../../models/location.dart';
 import '../../models/product.dart';
+import '../../shared/global_config.dart';
 import '../helpers/ensure-visible.dart';
 
 class LocationInput extends StatefulWidget {
@@ -64,7 +65,7 @@ class _LocationInputState extends State<LocationInput> {
         '/maps/api/geocode/json',
         {
           'address': address,
-          'key': 'AIzaSyBR6pVaeskMSlsOBhRccmT7tgBcR0yOSs8',
+          'key': apiKey,
         },
       );
       final http.Response response = await http.get(uri);
@@ -88,7 +89,7 @@ class _LocationInputState extends State<LocationInput> {
       );
     }
     final StaticMapProvider staticMapProvider =
-        StaticMapProvider('AIzaSyBR6pVaeskMSlsOBhRccmT7tgBcR0yOSs8');
+        StaticMapProvider(apiKey);
     final Uri staticMapUri = staticMapProvider.getStaticUriWithMarkers(
       [
         Marker(
@@ -119,7 +120,7 @@ class _LocationInputState extends State<LocationInput> {
       '/maps/api/geocode/json',
       {
         'latlng': '${latitude.toString()},${longitude.toString()}',
-        'key': 'AIzaSyBR6pVaeskMSlsOBhRccmT7tgBcR0yOSs8',
+        'key': apiKey,
       },
     );
     final http.Response response = await http.get(uri);
