@@ -97,8 +97,7 @@ class _ProductFABState extends State<ProductFAB> with TickerProviderStateMixin {
                     color: Colors.red,
                   ),
                   onPressed: () {
-                    model.selectProduct(widget.product.id);
-                    model.toggleProductFavouriteStatus();
+                    model.toggleProductFavouriteStatus(widget.product);
                   },
                 ),
               ),
