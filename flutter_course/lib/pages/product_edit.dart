@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 import '../models/scoped-models/main.dart';
@@ -138,7 +139,9 @@ class _ProductEditPageState extends State<ProductEditPage> {
       ) {
         return model.isLoading
             ? Center(
-                child: CircularProgressIndicator(),
+                child: Theme.of(context).platform == TargetPlatform.android
+                    ? CircularProgressIndicator()
+                    : CupertinoActivityIndicator(),
               )
             : RaisedButton(
                 child: Text('Save'),
