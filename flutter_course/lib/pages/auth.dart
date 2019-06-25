@@ -3,6 +3,7 @@ import 'package:scoped_model/scoped_model.dart';
 
 import '../models/scoped-models/main.dart';
 import '../models/auth.dart';
+import '../widgets/ui_elements/adaptive_progress_indicator.dart';
 
 class AuthPage extends StatefulWidget {
   @override
@@ -225,7 +226,7 @@ class _AuthPageState extends State<AuthPage> with TickerProviderStateMixin {
                         MainModel model,
                       ) {
                         return model.isLoading
-                            ? CircularProgressIndicator()
+                            ? AdaptiveProgressIndicator()
                             : RaisedButton(
                                 child: Text(
                                   _authMode == AuthMode.Login
