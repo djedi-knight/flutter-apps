@@ -16,7 +16,7 @@ import io.flutter.plugin.common.MethodChannel.Result;
 import io.flutter.plugins.GeneratedPluginRegistrant;
 
 public class MainActivity extends FlutterActivity {
-  private static final String CHANNEL = 'flutter-course.com/battery';
+  private static final String CHANNEL = "flutter-course.com/battery";
 
   private int getBatteryLevel() {
     int batteryLevel = -1;
@@ -36,7 +36,16 @@ public class MainActivity extends FlutterActivity {
     new MethodChannel(getFlutterView(), CHANNEL).setMethodCallHandler(new MethodCallHandler() {
       @Override
       public void onMethodCall(MethodCall call, Result result) {
-
+        if (call.method.equals("getBatteryLevel")) {
+          int batteryLevel = getBatteryLevel();
+          if (batteryLevel != -1) {
+            result.success(batteryLevel);
+          } else {
+            result.error("UNAVAILABLE", "Could not fetch battery level.", null);
+          }
+        } esle {
+          result.notImplemented();
+        }
       } 
     });
     GeneratedPluginRegistrant.registerWith(this);
