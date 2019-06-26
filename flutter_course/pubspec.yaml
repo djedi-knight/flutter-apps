@@ -25,6 +25,7 @@ dependencies:
   cupertino_icons: ^0.1.2
 
   # Third-Party Packages
+  flutter_launcher_icons: ^0.7.2
   http: ^0.12.0+2
   image_picker: ^0.6.0+9
   location: ^2.3.5
@@ -39,6 +40,12 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
+flutter_icons:
+  android: true 
+  ios: true
+  image_path: "assets/icon/app-icon.png"
+  adaptive_icon_background: "#FFFAFAFA"
+  adaptive_icon_foreground: "assets/icon/app-icon.png"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://www.dartlang.org/tools/pub/pubspec
