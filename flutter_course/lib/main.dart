@@ -40,6 +40,7 @@ class _MyAppState extends State<MyApp> {
       final int result = await _platformChannel.invokeMethod('getBatteryLevel');
       batteryLevel = 'Battery level is $result %.';
     } catch (error) {
+      print(error);
       batteryLevel = 'Failed to get battery level.';
     }
     print(batteryLevel);
